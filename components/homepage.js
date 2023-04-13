@@ -34,31 +34,50 @@ export default function Homepage() {
         setRemainders([])
 
         if (divisor && dividend) {
-            let q = 0
-            let r = 0
-            twosComplementConverter(divisor.toString(2).padStart(dividend.toString(2).length + 2, "0"))
-            console.log(twosComplement)
-            console.log(twosComplement.toString(2).padStart(dividend.toString(2).length + 2, "0"))
-            for (let bit of dividend.toString(2).padStart(dividend.toString(2).length + 1, "0")) {
-                r = (r << 1) + (bit == 1 ? 1 : 0)
-                
-                if (r < divisor)
-                    setQuotients((quotients) => [...quotients, (q << 1)])
-                else {
-                    r -= divisor
-                    setQuotients((quotients) => [...quotients, ((q << 1) + 1)])
-                }
-
-                console.log(quotients)
-
-            }
             setDividendBits((dividendBits) => [...dividendBits, dividend.toString(2).padStart(dividend.toString(2).length + 1, "0")])
             setDivisorBits((divisorBits) => [...divisorBits, divisor.toString(2).padStart(dividend.toString(2).length + 2, "0")])
+
+            let q = 3
+            let r = 0
+            q = q << (2) >> (0)
+            console.log(q.toString(2))
+            twosComplementConverter(divisorBits[0])
+           
+            for (let bit of q.toString(2).padStart(dividend.toString(2).length + 1, "0")) {
+                if (r > 0 ){
+                    r = (r << 1) + (bit == 1 ? 1 : 0)
+                    // add complement of divisor to r
+                    r -= twosComplement
+                    //if (r < 0)
+                    //    q = (q << 1) + 0
+                    //else
+                    //    q = (q << 1) + 1
+                }
+                else{
+                    r = (r << 1) + (bit == 1 ? 1 : 0)
+                    // add divisor to r
+                    r += divisor
+                   // if (r < 0)
+                    //   q = (q << 1) + 0
+                    //else
+                     //   q = (q << 1) + 1
+                }
+                
+                
+                if (r < divisor)
+                    setQuotients((quotients) => [...quotients, (q)])
+                else {
+                    r -= divisor
+                    setQuotients((quotients) => [...quotients, (q)])
+                }
+
+            }
+            
         }
     }
 
-    function twosComplementConverter(String){
-        const BinaryArray = String.split("")
+    function twosComplementConverter(BinaryString){
+        const BinaryArray = BinaryString.split("");
         const flippedArray = BinaryArray.map((bit) => (bit == 1 ? 0 : 1))
         const flippedString = flippedArray.join("")
         const flippedDecimal = parseInt(flippedString, 2) + 1
