@@ -8,6 +8,7 @@ export default function Homepage() {
     const [dividendBits, setDividendBits] = useState("")
     const [passes, setPasses] = useState([])
     const [stepIndex, setStepIndex] = useState(1)
+    const [decimalMode, setDecimalMode] = useState(true)
     const textRef = useRef(null)
 
     const [started, setStarted] = useState(false)
@@ -15,21 +16,40 @@ export default function Homepage() {
     const [showSteps, setShowSteps] = useState(false)
     const [disabled, setDisabled] = useState(false)
     const [invalid, setInvalid] = useState(false)
+    const [validBinary, setValidBinary] = useState(true)
 
     function checkBits() {
-        let dividendBits = dividend.toString(2)
-        let divisorBits = divisor.toString(2)
-
-        if (dividendBits.length > 16 || divisorBits.length > 16) {
-            setInvalid(true)
-            setDisabled(true)
-        } else {
-            let mostBits = Math.max(dividend.toString(2).length, divisor.toString(2).length)
-            // initialize dividend & divisor before starting
-            setDividendBits(dividend.toString(2).padStart(mostBits, 0))
-            setDivisorBits(divisor.toString(2).padStart(mostBits+1, 0))
-            setDisabled(true)
-            setStarted(true)
+        if (decimalMode) {
+            if (dividend.toString(2).length > 16 || divisor.toString(2).length > 16) {
+                setInvalid(true)
+                setDisabled(true)
+            } 
+            else {
+                let mostBits = Math.max(dividend.toString(2).length, divisor.toString(2).length)
+                // initialize dividend & divisor before starting
+                setDividendBits(dividend.toString(2).padStart(mostBits, 0))
+                setDivisorBits(divisor.toString(2).padStart(mostBits+1, 0))
+                setDisabled(true)
+                setStarted(true)
+            }
+        }
+        else if (!decimalMode) {
+            const regex = /^[01]+$/
+            if (dividend.toString().length > 16 || divisor.toString().length > 16) {
+                setInvalid(true)
+                setDisabled(true)
+            } 
+            else if (!regex.test(divisor.toString()) || !regex.test(dividend.toString())) {
+                setValidBinary(false);
+                setDisabled(true)
+            }
+            else {
+                let mostBits = Math.max(dividend.toString().length, divisor.toString().length)
+                setDividendBits(dividend.toString().padStart(mostBits, 0))
+                setDivisorBits(divisor.toString().padStart(mostBits+1, 0))
+                setDisabled(true)
+                setStarted(true)
+            }
         }
     }
 
@@ -137,6 +157,7 @@ export default function Homepage() {
         setDivisorBits("")
         setPasses([])
         setStepIndex(1)
+        setValidBinary(true)
     }
 
     function handleExport() {
@@ -152,6 +173,24 @@ export default function Homepage() {
     return(
         <div className="flex flex-row p-8 w-screen">
             <div className="flex flex-col w-1/3">
+
+                <div className="flex flex-row gap-4 justify-start p-2 mb-4">
+                    <button
+                    className={`flex justify-center rounded-lg p-0.5 w-full ${(decimalMode && !disabled) ? "bg-sky-200" : "bg-red-300" } ${disabled ? "bg-gray-300" : ""}`}
+                    onClick={() => setDecimalMode(true)}
+                    disabled={disabled}>
+                        Decimal Input
+                    </button>
+
+                    <button
+                    className={`flex justify-center rounded-lg p-0.5 w-full ${(!decimalMode && !disabled) ? "bg-sky-200" : "bg-red-300" } ${disabled ? "bg-gray-300" : ""}`}
+                    onClick={() => {
+                        setDecimalMode(false)
+                    }}
+                    disabled={disabled}>
+                        Binary Input
+                    </button>
+                </div>
 
                 <input
                     id="dividend"
@@ -176,12 +215,12 @@ export default function Homepage() {
                 {(divisor && dividend) ?
                     <div>
                         <button 
-                            className={`flex justify-center mt-4 w-full rounded-lg p-0.5 ${disabled ? "bg-gray-200" : "bg-sky-200" }`}
+                            className={`flex justify-center mt-4 w-full rounded-lg p-0.5 ${disabled ? "bg-gray-300" : "bg-sky-200" }`}
                             onClick={checkBits} disabled={disabled}>
                             Start Non-Restoring Division
                         </button>
 
-                        { (started || invalid) &&
+                        { (started || invalid || !validBinary) &&
                             <button className="flex justify-center mt-4 bg-sky-200 w-full rounded-lg p-0.5" 
                             onClick={handleReset}>
                                 Reset
@@ -274,6 +313,10 @@ export default function Homepage() {
 
                 {invalid && (
                     <h2 className="font-bold text-red-500"> Error: Input values should have less than 16 bits!</h2>
+                )}
+
+                {!validBinary && (
+                    <h2 className="font-bold text-red-500"> Error: Binary values should only contain 1s and 0s!</h2>
                 )}
             </div>
 
