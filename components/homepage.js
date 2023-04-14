@@ -47,7 +47,8 @@ export default function Homepage() {
                     rString = twosComplementConverter(r)
                 else
                     rString = r.toString(2).padStart(divisorBits[0].length , "0")
-                console.log(rString)
+                console.log("Q: " + q)
+                console.log("A: " + rString)
                 rString = rString.slice(1)
                 //console.log("Rstring after slice: " + rString)
                 rString = rString + (dividendBits[0][i])
@@ -55,7 +56,7 @@ export default function Homepage() {
                 //r = (r << 1) + Number(dividendBits[0][i]);
                 r = BinaryToSignedInt(rString)
                 
-                console.log("R: " + r)
+                
 
                 if (Number(rString[0]) ==  0){
                     difference = r - divisor
@@ -73,9 +74,24 @@ export default function Homepage() {
                 }
 
                 r = difference
+                
+                //console.log("Quotient: " + q)
 
-                console.log("Quotient: " + q)
+            }
 
+            if (r < 0){
+                // Print to say Restore R by doing A + Divisor
+                rString = twosComplementConverter(r)
+                r = BinaryToSignedInt(rString)
+                r = r + divisor
+                rString = r.toString(2).padStart(divisorBits[0].length , "0")
+                console.log("Final Q: " + q)
+                console.log("Final A: " + rString)
+            }
+            else {
+                rString = r.toString(2).padStart(divisorBits[0].length , "0")
+                console.log("Final Q: " + q)
+                console.log("Final A: " + rString)
             }
            
            /* for (let bit of q.toString(2).padStart(dividend.toString(2).length + 1, "0")) {
