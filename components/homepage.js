@@ -46,7 +46,7 @@ export default function Homepage() {
                 if (r < 0) // get twos complement of r binary string
                     rString = twosComplementConverter(r)
                 else
-                    rString = r.toString(2).padStart(divisorBits[0].length, "0")
+                    rString = r.toString(2).padStart(divisorBits[0].length , "0")
                 console.log(rString)
                 rString = rString.slice(1)
                 console.log("Rstring after slice: " + rString)
