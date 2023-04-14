@@ -46,16 +46,17 @@ export default function Homepage() {
                 if (r < 0) // get twos complement of r binary string
                     rString = twosComplementConverter(r)
                 else
+
                     rString = r.toString(2).padStart(divisorBits[0].length , "0")
                 console.log("Q: " + q)
                 console.log("A: " + rString)
+
                 rString = rString.slice(1)
                 //console.log("Rstring after slice: " + rString)
                 rString = rString + (dividendBits[0][i])
                 //console.log("Rstring after slice and append: " + rString)
                 //r = (r << 1) + Number(dividendBits[0][i]);
                 r = BinaryToSignedInt(rString)
-                
                 
 
                 if (Number(rString[0]) ==  0){
@@ -76,8 +77,8 @@ export default function Homepage() {
                 r = difference
                 
                 //console.log("Quotient: " + q)
-
             }
+
 
             if (r < 0){
                 // Print to say Restore R by doing A + Divisor
