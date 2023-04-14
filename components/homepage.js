@@ -46,16 +46,16 @@ export default function Homepage() {
                 if (r < 0) // get twos complement of r binary string
                     rString = twosComplementConverter(r)
                 else
-                    rString = r.toString(2).padStart(divisorBits[0].length , "0")
-                console.log(rString)
+                    rString = r.toString(2).padStart(divisorBits[0].length, "0")
+                //console.log(rString)
                 rString = rString.slice(1)
-                console.log("Rstring after slice: " + rString)
+                //console.log("Rstring after slice: " + rString)
                 rString = rString + (dividendBits[0][i])
                 console.log("Rstring after slice and append: " + rString)
                 //r = (r << 1) + Number(dividendBits[0][i]);
                 r = BinaryToSignedInt(rString)
                 
-                console.log("R: " + r)
+                //console.log("R: " + r)
 
                 if (Number(rString[0]) ==  0){
                     difference = r - divisor
@@ -74,7 +74,7 @@ export default function Homepage() {
 
                 r = difference
 
-                //console.log(q)
+                console.log("Quotient: " + q)
 
             }
            
@@ -113,9 +113,9 @@ export default function Homepage() {
 
     function twosComplementConverter(number){
         number = Math.abs(number);
-        console.log(number)
+        //console.log(number)
         const BinaryString = number.toString(2).padStart(divisorBits[0].length, "0");
-        console.log("BinaryString: " + BinaryString)
+        //console.log("BinaryString: " + BinaryString)
         const BinaryArray = BinaryString.split("");
         const flippedArray = BinaryArray.map((bit) => (bit == 1 ? 0 : 1))
         const flippedString = flippedArray.join("")
