@@ -37,13 +37,48 @@ export default function Homepage() {
             setDividendBits((dividendBits) => [...dividendBits, dividend.toString(2).padStart(dividend.toString(2).length + 1, "0")])
             setDivisorBits((divisorBits) => [...divisorBits, divisor.toString(2).padStart(dividend.toString(2).length + 2, "0")])
 
-            let q = 3
+            let q = dividendBits[0]
             let r = 0
-            q = q << (2) >> (0)
-            console.log(q.toString(2))
-            twosComplementConverter(divisorBits[0])
+            let rString = ""
+            let difference = 0
+
+            for (let i = 0; i < dividendBits[0].length; i++) {
+                if (r < 0) // get twos complement of r binary string
+                    rString = twosComplementConverter(r)
+                else
+                    rString = r.toString(2).padStart(divisorBits[0].length, "0")
+                console.log(rString)
+                rString = rString.slice(1)
+                console.log("Rstring after slice: " + rString)
+                rString = rString + (dividendBits[0][i])
+                console.log("Rstring after slice and append: " + rString)
+                //r = (r << 1) + Number(dividendBits[0][i]);
+                r = BinaryToSignedInt(rString)
+                
+                console.log("R: " + r)
+
+                if (Number(rString[0]) ==  0){
+                    difference = r - divisor
+
+                }
+                else{
+                    difference = r + divisor
+                }
+                q = q.slice(1);
+                if (difference < 0){
+                    q = q + "0"
+                }
+                else{
+                    q = q + "1"
+                }
+
+                r = difference
+
+                //console.log(q)
+
+            }
            
-            for (let bit of q.toString(2).padStart(dividend.toString(2).length + 1, "0")) {
+           /* for (let bit of q.toString(2).padStart(dividend.toString(2).length + 1, "0")) {
                 if (r > 0 ){
                     r = (r << 1) + (bit == 1 ? 1 : 0)
                     // add complement of divisor to r
@@ -71,19 +106,34 @@ export default function Homepage() {
                     setQuotients((quotients) => [...quotients, (q)])
                 }
 
-            }
+            } */
             
         }
     }
 
-    function twosComplementConverter(BinaryString){
+    function twosComplementConverter(number){
+        number = Math.abs(number);
+        console.log(number)
+        const BinaryString = number.toString(2).padStart(divisorBits[0].length, "0");
+        console.log("BinaryString: " + BinaryString)
         const BinaryArray = BinaryString.split("");
         const flippedArray = BinaryArray.map((bit) => (bit == 1 ? 0 : 1))
         const flippedString = flippedArray.join("")
         const flippedDecimal = parseInt(flippedString, 2) + 1
-        setTwosComplement(flippedDecimal)
+        return flippedDecimal.toString(2).padStart(divisorBits[0].length, "0")
     }
 
+    function BinaryToSignedInt(binaryString){
+        if (binaryString[0] == 0)
+            return parseInt(binaryString, 2)
+        else{
+            const flippedArray = binaryString.split("").map((bit) => (bit == 1 ? 0 : 1))
+            const flippedString = flippedArray.join("")
+            const flippedDecimal = parseInt(flippedString, 2) + 1
+            return flippedDecimal * -1
+        }
+    }
+    
     function handleReset() {
         setDisabled(false)
         setStarted(false)
