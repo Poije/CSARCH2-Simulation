@@ -17,6 +17,7 @@ export default function Homepage() {
     const [disabled, setDisabled] = useState(false)
     const [invalid, setInvalid] = useState(false)
     const [validBinary, setValidBinary] = useState(true)
+    const [validUnsign, setUnsigned] = useState(true)
 
     function checkBits() {
         if (decimalMode) {
@@ -24,8 +25,11 @@ export default function Homepage() {
                 setInvalid(true)
                 setDisabled(true)
             } 
+            else if(dividend<0 ||divisor<0){
+                setUnsigned(false)
+                setDisabled(true)
+            }
             else {
-                
                 let mostBits = Math.max(dividend.toString(2).length, divisor.toString(2).length)
                 // initialize dividend & divisor before starting
                 setDividendBits(dividend.toString(2).padStart(mostBits, 0))
@@ -161,6 +165,7 @@ export default function Homepage() {
         setPasses([])
         setStepIndex(1)
         setValidBinary(true)
+        setUnsigned(true)
     }
 
     function handleExport() {
@@ -174,8 +179,8 @@ export default function Homepage() {
     }
 
     return(
-        <div className="flex flex-row p-8 w-screen">
-            <div className="flex flex-col w-1/3">
+        <div className="flex flex-row p-10 w-screen">
+            <div className="flex flex-col w-2/3">
 
                 <div className="flex flex-row gap-4 justify-start p-2 mb-4">
                     <button
@@ -199,9 +204,9 @@ export default function Homepage() {
                     id="dividend"
                     className="focus:outline-blue-100 mb-4 w-full" 
                     placeholder="Enter Dividend"
-                    type={decimalMode ? "number" : "text"}
+                    type="number"
                     value={dividend}
-                    onChange={(e) => {decimalMode ? setDividend(Number(e.target.value)) : setDividend(e.target.value)}}
+                    onChange={(e) => setDividend(Number(e.target.value))}
                     disabled={disabled}>
                 </input>
 
@@ -209,9 +214,9 @@ export default function Homepage() {
                     id="divisor"
                     className="focus:outline-blue-100 w-full" 
                     placeholder="Enter Divisor"
-                    type={decimalMode ? "number" : "text"}
+                    type="number"
                     value={divisor}
-                    onChange={(e) => {decimalMode ? setDivisor(Number(e.target.value)) : setDivisor(e.target.value)}}
+                    onChange={(e) => setDivisor(Number(e.target.value))}
                     disabled={disabled}>
                 </input>
 
@@ -223,7 +228,7 @@ export default function Homepage() {
                             Start Non-Restoring Division
                         </button>
 
-                        { (started || invalid || !validBinary) &&
+                        { (started || invalid || !validBinary|| !validUnsign) &&
                             <button className="flex justify-center mt-4 bg-sky-200 w-full rounded-lg p-0.5" 
                             onClick={handleReset}>
                                 Reset
@@ -240,11 +245,8 @@ export default function Homepage() {
                 { (started && !invalid && passes.length > 0) && 
                     <div className="flex flex-col">
                         <div className="flex flex-col" ref={textRef}>
-                            <div className="flex flex-col gap-4 mb-4">
-                                <h2> ---------------INITIALIZE----------------- </h2>
-                                <h2> Dividend: {dividendBits} Divisor: {divisorBits} </h2>
-                                <h2> A: {passes[0].A} Q: {passes[0].Q} </h2>
-                                <h2> ------------------------------------------ </h2>
+                            <div className="flex flex-row gap-4 mb-4">
+                                <h2> Initialize: Dividend: {dividendBits} Divisor: {divisorBits} A: {passes[0].A} </h2>
                             </div>
                                 
                             {(!showAll && !showSteps) &&
@@ -271,7 +273,7 @@ export default function Homepage() {
                                                 passes.map((pass, index) => {
                                                     if (index > 0)
                                                         return (
-                                                            <h2 className="mb-4" key={index}> A: {pass.A} Q: {pass.Q} Pass {index}</h2>
+                                                            <h2 className="mb-4" key={index}>Pass {index} A: {pass.A} Q: {pass.Q}</h2>
                                                         )
                                                 })
                                             }
@@ -285,7 +287,7 @@ export default function Homepage() {
                                     <div>
                                         {(passes.length > 0) &&
                                             passes.slice(1, stepIndex).map((pass, index) => (
-                                                <h2 className="mb-4" key={index}> A: {pass.A} Q: {pass.Q} Pass {index+1}</h2>
+                                                <h2 className="mb-4" key={index}>Pass {index+1} A: {pass.A} Q: {pass.Q}</h2>
                                             ))
                                         }
                                     </div>
@@ -320,7 +322,9 @@ export default function Homepage() {
                 {invalid && (
                     <h2 className="font-bold text-red-500"> Error: Input values should have less than 16 bits!</h2>
                 )}
-
+                {!validUnsign && (
+                    <h2 className="font-bold text-red-500"> Error:Values should be unisigned!</h2>
+                )}
                 {!validBinary && (
                     <h2 className="font-bold text-red-500"> Error: Binary values should only contain 1s and 0s!</h2>
                 )}
