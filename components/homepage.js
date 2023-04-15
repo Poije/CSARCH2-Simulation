@@ -44,6 +44,8 @@ export default function Homepage() {
                 setDisabled(true)
             }
             else {
+                setDividend(parseInt(dividend.toString(), 2))
+                setDivisor(parseInt(divisor.toString(), 2))
                 let mostBits = Math.max(dividend.toString().length, divisor.toString().length)
                 setDividendBits(dividend.toString().padStart(mostBits, 0))
                 setDivisorBits(divisor.toString().padStart(mostBits+1, 0))
