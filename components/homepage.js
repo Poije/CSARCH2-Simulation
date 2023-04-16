@@ -180,7 +180,7 @@ export default function Homepage() {
 
     return(
         <div className="flex flex-row p-10 w-screen">
-            <div className="flex flex-col w-2/3">
+            <div className="flex flex-col w-2/3 ">
 
                 <div className="flex flex-row gap-4 justify-start p-2 mb-4">
                     <button
@@ -323,7 +323,7 @@ export default function Homepage() {
                     <h2 className="font-bold text-red-500"> Error: Input values should have less than 16 bits!</h2>
                 )}
                 {!validUnsign && (
-                    <h2 className="font-bold text-red-500"> Error:Values should be unisigned!</h2>
+                    <h2 className="font-bold text-red-500"> Error: Values should be unsigned!</h2>
                 )}
                 {!validBinary && (
                     <h2 className="font-bold text-red-500"> Error: Binary values should only contain 1s and 0s!</h2>
